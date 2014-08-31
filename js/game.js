@@ -12,7 +12,8 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 
 var person;
-
+var startGame = true;
+var gameTimer = 110;
 // Create our 'main' state that will contain the game
 var mainState = {
 
@@ -20,7 +21,7 @@ var mainState = {
         // This function will be executed at the beginning     
         // That's where we load the game's assets  
         game.stage.backgroundColor = '#A9A9A9'
-        game.load.image('mushroom', 'assets/sprites/mushroom.png');
+        game.load.image('pointer', 'assets/sprites/pointer.png');
         game.load.image('yellow', 'assets/sprites/bird.png');
     
     },
@@ -28,7 +29,7 @@ var mainState = {
     create: function() { 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.person = game.add.sprite(700, 210, 'mushroom');
+        this.person = game.add.sprite(700, 210, 'pointer');
         game.debug.geom(this.person,'#cfffff');
 
         game.physics.enable(this.person, Phaser.Physics.ARCADE);
@@ -39,31 +40,43 @@ var mainState = {
         
         this.baddies = game.add.group(); // Create a group  
         this.baddies.enableBody = true;  // Add physics to the group  
-        this.baddies.createMultiple(50, 'yellow'); // Create 20 pipes
+        this.baddies.createMultiple(50, 'yellow'); // Create 20 baddies
 
         // This function is called after the preload function     
         // Here we set up the game, display sprites, etc.
 
         this.score = 0;  
-        this.labelScore = game.add.text(20, 10, "0", { font: "30px Arial", fill: "#ffffff" });
+        this.labelScore = game.add.text(400, 300, "0", { font: "72px Arial", fill: "#808080" });
         this.duration = 0;  
         this.labelDuration = game.add.text(20, 50, "0", { font: "30px Arial", fill: "#ffffff" });
-
+        
         this.timer = game.time.events.loop(1000, this.tick, this);
     },
+
 
     update: function() {
         // This function is called 60 times per second    
         // It contains the game's logic
-        this.score += 1;
-        this.labelScore.text = this.score;
+        if (game.input.mousePointer.isDown){
+            startGame = true;
+            game.stage.backgroundColor = '#000000';
+        }
+        else{
+            startGame = false;
+            game.stage.backgroundColor = '#F0FFFF';
+        }
 
+
+        this.labelScore.text = this.score;
         game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
+       
+
     },
 
     hit: function() {
-        this.score -= 1;
         this.labelScore.text = this.score;
+        startGame = false;
+        this.timer.destroy();
     },
 
     tick: function() {
