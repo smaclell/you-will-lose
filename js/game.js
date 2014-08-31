@@ -39,7 +39,7 @@ var mainState = {
         
         this.baddies = game.add.group(); // Create a group  
         this.baddies.enableBody = true;  // Add physics to the group  
-        this.baddies.createMultiple(20, 'yellow'); // Create 20 pipes
+        this.baddies.createMultiple(50, 'yellow'); // Create 20 pipes
 
         // This function is called after the preload function     
         // Here we set up the game, display sprites, etc.
@@ -78,20 +78,20 @@ var mainState = {
 
         // Set the new position of the baddy
         var sides = [
-            [0,800,0,0,1,0],
-            [0,800,600,600,-1,0],
-            [0,0,0,600,0,1],
-            [800,800,0,600,0,-1]
+            [0,800,0,0,0,1],
+            [0,800,600,600,0,-1],
+            [0,0,0,600,1,0],
+            [800,800,0,600,-1,0]
         ];
 
         var side = sides[Math.floor(Math.random() * 4)];
 
-        var x = Math.floor(Math.random() * side[1]) + side[0];
-        var y = Math.floor(Math.random() * side[3]) + side[2];
+        var x = game.rnd.integerInRange(side[0], side[1]);
+        var y = game.rnd.integerInRange(side[2], side[3]);
         baddy.reset(x, y);
 
         // Add velocity to the baddy to make it move left
-        var actual = -200;
+        var actual = 200 + Math.floor(this.score / 50)^2;
         var offset = Math.floor(Math.random() * 24 ) - 12;
         baddy.body.velocity.x = actual*side[4] + offset*side[5];
         baddy.body.velocity.y = actual*side[5] + offset*side[4];
