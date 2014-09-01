@@ -47,25 +47,29 @@ var mainState = {
 
         this.score = 0;  
         this.labelScore = game.add.text(400, 300, "0", { font: "72px Arial", fill: "#808080" });
-        this.duration = 0;  
-        this.labelDuration = game.add.text(20, 50, "0", { font: "30px Arial", fill: "#ffffff" });
+ //       this.duration = 0;  
+ //       this.labelDuration = game.add.text(20, 50, "0", { font: "30px Arial", fill: "#ffffff" });
         
         this.timer = game.time.events.loop(1000, this.tick, this);
     },
 
 
     update: function() {
-        // This function is called 60 times per second    
-        // It contains the game's logic
+        // change screen colour and set startGame boolean
         if (game.input.mousePointer.isDown){
             startGame = true;
             game.stage.backgroundColor = '#000000';
+            this.score += 1;
+            this.labelScore.text = this.score;
         }
         else{
             startGame = false;
             game.stage.backgroundColor = '#F0FFFF';
         }
 
+        //follow mouse pointer 
+        this.person.x = game.input.x;
+        this.person.y = game.input.y;
 
         this.labelScore.text = this.score;
         game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
@@ -76,13 +80,11 @@ var mainState = {
     hit: function() {
         this.labelScore.text = this.score;
         startGame = false;
-        this.timer.destroy();
+        //this.timer.destroy();
     },
 
     tick: function() {
         this.addBaddy();
-        this.duration += 1;
-        this.labelDuration.text = this.duration;
     },
 
     addBaddy: function() {
