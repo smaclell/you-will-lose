@@ -22,7 +22,7 @@ var mainState = {
         // That's where we load the game's assets  
         game.stage.backgroundColor = '#A9A9A9'
         game.load.image('pointer', 'assets/sprites/pointer.png');
-        game.load.image('yellow', 'assets/sprites/bird.png');
+        game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
     
     },
 
@@ -40,7 +40,7 @@ var mainState = {
         
         this.baddies = game.add.group(); // Create a group  
         this.baddies.enableBody = true;  // Add physics to the group  
-        this.baddies.createMultiple(50, 'yellow'); // Create 20 baddies
+        this.baddies.createMultiple(50, 'stageOneBlock'); // Create 20 baddies
 
         // This function is called after the preload function     
         // Here we set up the game, display sprites, etc.
