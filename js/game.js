@@ -9,11 +9,11 @@
 // Rediculous scoring system, goes up so fast it feels like you are really winning
 
 // Initialize Phaser, and create a 400x490px game
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
-
+var game = new Phaser.Game(800,600, Phaser.AUTO, 'game');
 var person;
-var startGame = true;
-var gameTimer = 110;
+var black = "#000000";
+var white = "F0FFFF";
+var startGame = false;
 // Create our 'main' state that will contain the game
 var mainState = {
 
@@ -46,7 +46,7 @@ var mainState = {
         // Here we set up the game, display sprites, etc.
 
         this.score = 0;  
-        this.labelScore = game.add.text(400, 300, "0", { font: "72px Arial", fill: "#808080" });
+        this.labelScore = game.add.text( 300, 300, "0", { font: "150px Arial", fill: "#808080" });
  //       this.duration = 0;  
  //       this.labelDuration = game.add.text(20, 50, "0", { font: "30px Arial", fill: "#ffffff" });
         
@@ -55,36 +55,46 @@ var mainState = {
 
 
     update: function() {
-        // change screen colour and set startGame boolean
+        //follow mouse pointer offset by 5 to center it
+        this.person.x = game.input.x - 5;
+        this.person.y = game.input.y - 5;
+
         if (game.input.mousePointer.isDown){
-            startGame = true;
-            game.stage.backgroundColor = '#000000';
-            this.score += 1;
-            this.labelScore.text = this.score;
+            this.runningGame();
         }
         else{
-            startGame = false;
-            game.stage.backgroundColor = '#F0FFFF';
+            this.stoppingGame();
         }
-
-        //follow mouse pointer 
-        this.person.x = game.input.x;
-        this.person.y = game.input.y;
 
         this.labelScore.text = this.score;
         game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
-       
-
     },
 
     hit: function() {
-        this.labelScore.text = this.score;
         startGame = false;
         //this.timer.destroy();
     },
 
     tick: function() {
-        this.addBaddy();
+    this.addBaddy();
+
+
+    },
+    stoppingGame: function(){
+        startGame = false;
+        game.stage.backgroundColor = white;
+        this.person.visible = false;
+        this.baddies.visible = false;
+        //making baddies dissapear currently, not removing properly
+    },
+
+    runningGame: function(){
+        startGame = true;
+        this.person.visible = true;
+        this.baddies.visible = true;
+        game.stage.backgroundColor = black;
+        this.score += 1;
+        this.labelScore.text = this.score;
     },
 
     addBaddy: function() {
