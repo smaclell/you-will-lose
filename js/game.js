@@ -20,6 +20,7 @@ var mainState = {
     preload: function() { 
         // This function will be executed at the beginning     
         // That's where we load the game's assets  
+        game.load.audio('song1',['assets/music/AttackOnShadow.mp3'])
         game.stage.backgroundColor = '#A9A9A9'
         game.load.image('pointer', 'assets/sprites/pointer.png');
         game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
@@ -37,14 +38,13 @@ var mainState = {
         this.person.input.enableDrag(true);
         this.person.body.collideWorldBounds = true;
         this.person.body.bounce.setTo(1, 1);
-        
+
         this.baddies = game.add.group(); // Create a group  
         this.baddies.enableBody = true;  // Add physics to the group  
         this.baddies.createMultiple(50, 'stageOneBlock'); // Create 20 baddies
 
         // This function is called after the preload function     
         // Here we set up the game, display sprites, etc.
-
         this.score = 0;  
         this.labelScore = game.add.text( 300, 300, "0", { font: "150px Arial", fill: "#808080" });
  //       this.duration = 0;  
@@ -64,7 +64,8 @@ var mainState = {
         }
         else{
             this.stoppingGame();
-        }
+            }
+    
 
         this.labelScore.text = this.score;
         game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
@@ -76,10 +77,11 @@ var mainState = {
     },
 
     tick: function() {
-    this.addBaddy();
-
+        this.addBaddy();
 
     },
+
+
     stoppingGame: function(){
         startGame = false;
         game.stage.backgroundColor = white;
@@ -95,6 +97,7 @@ var mainState = {
         game.stage.backgroundColor = black;
         this.score += 1;
         this.labelScore.text = this.score;
+        
     },
 
     addBaddy: function() {
