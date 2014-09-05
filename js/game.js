@@ -73,6 +73,7 @@ var mainState = {
 
     hit: function() {
         startGame = false;
+        this.resetGame();
         //this.timer.destroy();
     },
 
@@ -81,6 +82,9 @@ var mainState = {
 
     },
 
+    resetGame:function(){
+    game.state.start('main');
+    },
 
     stoppingGame: function(){
         startGame = false;
