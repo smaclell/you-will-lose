@@ -41,8 +41,18 @@ var mainState = {
     this.baddies.enableBody = true;
     this.baddies.createMultiple(50, 'stageOneBlock');
 
+    var scoreStyle = {
+      font: "300px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 24
+    };
+
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, "0", scoreStyle);
+    this.labelScore.anchor.set(0.5);
+
     this.score = 0;
-    this.labelScore = game.add.text(300, 300, "0", { font: "150px Arial", fill: "#808080" });
 
     this.timer = game.time.events.loop(1000, this.tick, this);
   },
