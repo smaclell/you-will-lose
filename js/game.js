@@ -60,8 +60,8 @@ var mainState = {
 
   update: function () {
     //follow mouse pointer offset by 5 to center it
-    this.person.x = game.input.x - 5;
-    this.person.y = game.input.y - 5;
+    this.person.x = game.input.x - this.person.width / 2;
+    this.person.y = game.input.y - this.person.height / 2;
 
     if (game.input.mousePointer.isDown) {
       this.runningGame();
