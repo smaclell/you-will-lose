@@ -1,0 +1,10 @@
+#game {
+	margin: 4em auto;
+	cursor: none;
+	width: 800px;
+	height: 600px;
+}
+
+#wrapper: {
+	text-align: center;
+}
