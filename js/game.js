@@ -12,7 +12,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
-var white = "F0FFFF";
+var white = "#FCFCFC";
 var startGame = false;
 
 // Create our 'main' state that will contain the game
@@ -36,7 +36,7 @@ var mainState = {
       shadowBlur: 24
     };
 
-    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, "0", scoreStyle);
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, "", scoreStyle);
     this.labelScore.anchor.set(0.5);
 
     this.person = game.add.sprite(700, 210, 'pointer');
@@ -70,7 +70,6 @@ var mainState = {
       this.stoppingGame();
     }
 
-    this.labelScore.text = this.score;
     game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
   },
 
