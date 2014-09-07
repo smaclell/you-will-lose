@@ -53,7 +53,8 @@ var mainState = {
     this.baddies.createMultiple(36, 'stageOneBlock');
 
     this.score = 0;
-    this.spawner = game.time.events.loop(1000, this.addBaddy, this);
+    this.initialSpawnRate = 1600;
+    this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
   },
 
@@ -80,10 +81,10 @@ var mainState = {
   },
 
   tick: function () {
-    var minimum = 250;
+    var minimum = 200;
     if (this.spawner.delay > minimum) {
-      var scaler = 1 - (this.spawner.delay - minimum) / (this.timer.delay - minimum);
-      this.spawner.delay -= Math.floor(Math.random() * (5 + 15 * scaler)) + 5 + 25 * scaler;
+      var scaler = (this.spawner.delay - minimum) / (this.initialSpawnRate - minimum);
+      this.spawner.delay -= Math.floor(Math.random() * (5 + 15 * scaler) + 5 + 25 * scaler);
     }
   },
 
