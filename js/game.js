@@ -130,9 +130,10 @@ var mainState = {
     baddy.reset(x, y);
 
     // Add velocity to the baddy to make it move left
+    var spread = 36;
     var scale = Math.floor(Math.pow(this.score / 40.0, 1.25));
     var actual = 200 + scale;
-    var offset = Math.floor(Math.random() * 24) - 12;
+    var offset = Math.floor(Math.random() * spread - spread / 2);
     baddy.body.velocity.x = actual * side[4] + offset * side[5];
     baddy.body.velocity.y = actual * side[5] + offset * side[4];
 
