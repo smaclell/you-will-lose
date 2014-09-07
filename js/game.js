@@ -75,6 +75,7 @@ var mainState = {
 
   hit: function () {
     startGame = false;
+    this.spawner.delay = this.initialSpawnRate;
     this.resetGame();
     //this.timer.destroy();
   },
