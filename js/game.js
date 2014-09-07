@@ -50,9 +50,10 @@ var mainState = {
 
     this.baddies = game.add.group();
     this.baddies.enableBody = true;
-    this.baddies.createMultiple(50, 'stageOneBlock');
+    this.baddies.createMultiple(36, 'stageOneBlock');
 
     this.score = 0;
+    this.spawner = game.time.events.loop(1000, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
   },
 
@@ -79,7 +80,11 @@ var mainState = {
   },
 
   tick: function () {
-    this.addBaddy();
+    var minimum = 250;
+    if (this.spawner.delay > minimum) {
+      var scaler = 1 - (this.spawner.delay - minimum) / (this.timer.delay - minimum);
+      this.spawner.delay -= Math.floor(Math.random() * (5 + 15 * scaler)) + 5 + 25 * scaler;
+    }
   },
 
   resetGame: function () {
@@ -106,6 +111,9 @@ var mainState = {
   addBaddy: function () {
     // Get the first dead pipe of our group
     var baddy = this.baddies.getFirstDead();
+    if (!baddy) {
+      return;
+    }
 
     // Set the new position of the baddy
     var sides = [
@@ -122,8 +130,8 @@ var mainState = {
     baddy.reset(x, y);
 
     // Add velocity to the baddy to make it move left
-    var scale = Math.floor(this.score / 50);
-    var actual = 200 + scale * scale;
+    var scale = Math.floor(Math.pow(this.score / 40.0, 1.25));
+    var actual = 200 + scale;
     var offset = Math.floor(Math.random() * 24) - 12;
     baddy.body.velocity.x = actual * side[4] + offset * side[5];
     baddy.body.velocity.y = actual * side[5] + offset * side[4];
