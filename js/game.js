@@ -146,10 +146,10 @@ var mainState = {
 
     // Set the new position of the baddy
     var sides = [
-      [0, 800, 0, 0, 0, 1],
-      [0, 800, 600, 600, 0, -1],
-      [0, 0, 0, 600, 1, 0],
-      [800, 800, 0, 600, -1, 0]
+      [0, game.world.width, 0, 0, 0, 1],
+      [0, game.world.width, game.world.height, game.world.height, 0, -1],
+      [0, 0, 0, game.world.height, 1, 0],
+      [game.world.width, game.world.width, 0, game.world.height, -1, 0]
     ];
 
     var side = sides[Math.floor(Math.random() * 4)];
