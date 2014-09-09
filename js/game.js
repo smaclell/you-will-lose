@@ -14,7 +14,7 @@ var black = "#000000";
 var white = "#FCFCFC";
 var gameState = true;
 var gameText = 'You will lose';
-
+var music;
 // Create our 'main' state that will contain the game
 var mainState = {
 
@@ -41,6 +41,10 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
+
+    music = game.add.audio('song1');
+    music.play();
+
     this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
@@ -104,6 +108,7 @@ var mainState = {
 
   resetGame: function () {
     gameText = "Give up..";
+    music.stop();
     game.state.start('main');
   },
 
@@ -146,10 +151,10 @@ var mainState = {
 
     // Set the new position of the baddy
     var sides = [
-      [0, 800, 0, 0, 0, 1],
-      [0, 800, 600, 600, 0, -1],
-      [0, 0, 0, 600, 1, 0],
-      [800, 800, 0, 600, -1, 0]
+      [0, 1020, 0, 0, 0, 1],
+      [0, 1020, 750, 750, 0, -1],
+      [0, 0, 0, 750, 1, 0],
+      [1020, 1020, 0, 750, -1, 0]
     ];
 
     var side = sides[Math.floor(Math.random() * 4)];
