@@ -8,8 +8,7 @@
 
 // Rediculous scoring system, goes up so fast it feels like you are really winning
 
-// Initialize Phaser, and create a 400x490px game
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
+var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
