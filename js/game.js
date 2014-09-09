@@ -13,7 +13,8 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
-var startGame = false;
+var gameState = true;
+var gameText = 'You will lose';
 
 // Create our 'main' state that will contain the game
 var mainState = {
@@ -27,7 +28,6 @@ var mainState = {
 
   create: function () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-
     var scoreStyle = {
       font: "300px Arial",
       fill: "#808080",
@@ -35,8 +35,17 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
+      var labelStyle = {
+      font: "120px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 24
+    };
+    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
+    this.gameMessageText.anchor.setTo(0.5, 0);
 
-    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, "", scoreStyle);
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, gameText,  scoreStyle);
     this.labelScore.anchor.set(0.5);
 
     this.person = game.add.sprite(700, 210, 'pointer');
@@ -63,21 +72,26 @@ var mainState = {
     //follow mouse pointer offset by 5 to center it
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
-
-    if (game.input.mousePointer.isDown) {
-      this.runningGame();
-    } else {
-      this.stoppingGame();
+    if(gameState == true){
+      if (game.input.mousePointer.isDown) {
+          gameText = "";
+          this.runningGame();
+      } else {
+          this.stoppingGame();
+      }
+    }else{
+      this.gameOver();
     }
+
+    this.gameMessageText.text = gameText;
 
     game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
   },
 
   hit: function () {
-    startGame = false;
     this.spawner.delay = this.initialSpawnRate;
-    this.resetGame();
-    //this.timer.destroy();
+    gameState = false;
+    game.input.reset();
   },
 
   tick: function () {
@@ -89,11 +103,11 @@ var mainState = {
   },
 
   resetGame: function () {
+    gameText = "Give up..";
     game.state.start('main');
   },
 
   stoppingGame: function () {
-    startGame = false;
     game.stage.backgroundColor = white;
     this.person.visible = false;
     this.baddies.visible = false;
@@ -101,13 +115,27 @@ var mainState = {
   },
 
   runningGame: function () {
-    startGame = true;
     this.person.visible = true;
     this.baddies.visible = true;
     game.stage.backgroundColor = black;
     this.score += 1;
     this.labelScore.text = this.score;
   },
+
+    gameOver: function () {
+             //add text
+        game.stage.backgroundColor = black;
+
+        gameText = "GAMEOVER!";
+        this.baddies.visible = false;
+        if(game.input.mousePointer.isDown){
+          gameState = true;
+          this.resetGame();
+        }
+        //add a click handler
+    },
+
+
 
   addBaddy: function () {
     // Get the first dead pipe of our group
