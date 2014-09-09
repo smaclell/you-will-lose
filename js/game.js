@@ -45,7 +45,8 @@ var mainState = {
     this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
-    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, gameText,  scoreStyle);
+    var initialScoreText = this.score !== undefined ? this.score : '';
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, initialScoreText,  scoreStyle);
     this.labelScore.anchor.set(0.5);
 
     this.person = game.add.sprite(700, 210, 'pointer');
