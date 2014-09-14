@@ -15,12 +15,14 @@ var white = "#FCFCFC";
 var gameState = true;
 var gameText = 'You will lose';
 var music;
+var thud;
 // Create our 'main' state that will contain the game
 var mainState = {
 
   preload: function () {
     game.stage.backgroundColor = '#A9A9A9';
     game.load.audio('song1', ['assets/music/AttackOnShadow.mp3']);
+    game.load.audio('thud', ['assets/sounds/thud.wav']);
     game.load.image('pointer', 'assets/sprites/pointer.png');
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
   },
@@ -41,7 +43,7 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
-
+    thud = game.add.audio('thud');
     music = game.add.audio('song1');
     music.play();
 
@@ -73,7 +75,6 @@ var mainState = {
 
 
   update: function () {
-    //follow mouse pointer offset by 5 to center it
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
     if(gameState == true){
@@ -88,7 +89,7 @@ var mainState = {
     }
 
     this.gameMessageText.text = gameText;
-
+    game.input.onDown.add(this.thudSound, this);
     game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
   },
 
@@ -127,6 +128,10 @@ var mainState = {
     this.labelScore.text = this.score;
   },
 
+  thudSound: function(){
+    thud.play();
+  },
+
     gameOver: function () {
              //add text
         game.stage.backgroundColor = black;
@@ -139,8 +144,6 @@ var mainState = {
         }
         //add a click handler
     },
-
-
 
   addBaddy: function () {
     // Get the first dead pipe of our group
