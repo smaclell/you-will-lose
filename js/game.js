@@ -15,14 +15,19 @@ var white = "#FCFCFC";
 var gameState = true;
 var gameText = 'You will lose';
 var music;
+var gameoverImg;
+var thud;
 // Create our 'main' state that will contain the game
 var mainState = {
 
   preload: function () {
     game.stage.backgroundColor = '#A9A9A9';
     game.load.audio('song1', ['assets/music/AttackOnShadow.mp3']);
+    game.load.audio('thud', ['assets/sounds/thud.wav']);
     game.load.image('pointer', 'assets/sprites/pointer.png');
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
+    game.load.image('gameover', 'assets/sprites/gameover.png');
+    game.load.image('giveup', 'assets/sprites/giveUp.png');
   },
 
   create: function () {
@@ -41,9 +46,12 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
-
+    thud = game.add.audio('thud');
     music = game.add.audio('song1');
     music.play();
+
+    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
+    gameoverImg.alpha = 0;
 
     this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
@@ -73,12 +81,10 @@ var mainState = {
 
 
   update: function () {
-    //follow mouse pointer offset by 5 to center it
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
     if(gameState == true){
       if (game.input.mousePointer.isDown) {
-          gameText = "";
           this.runningGame();
       } else {
           this.stoppingGame();
@@ -88,7 +94,7 @@ var mainState = {
     }
 
     this.gameMessageText.text = gameText;
-
+    game.input.onDown.add(this.thudSound, this);
     game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
   },
 
@@ -96,6 +102,10 @@ var mainState = {
     this.spawner.delay = this.initialSpawnRate;
     gameState = false;
     game.input.reset();
+
+    gameText = "";
+    game.add.tween(gameoverImg).to({alpha: 1}, 2000, Phaser.Easing.Linear.None, true);
+        
   },
 
   tick: function () {
@@ -116,22 +126,25 @@ var mainState = {
     game.stage.backgroundColor = white;
     this.person.visible = false;
     this.baddies.visible = false;
-    //making baddies dissapear currently, not removing properly
   },
 
   runningGame: function () {
     this.person.visible = true;
     this.baddies.visible = true;
     game.stage.backgroundColor = black;
+    gameText = "";
     this.score += 1;
     this.labelScore.text = this.score;
+  },
+
+  thudSound: function(){
+    thud.play();
   },
 
     gameOver: function () {
              //add text
         game.stage.backgroundColor = black;
-
-        gameText = "GAMEOVER!";
+        //gameText = "GAMEOVER!";
         this.baddies.visible = false;
         if(game.input.mousePointer.isDown){
           gameState = true;
@@ -139,8 +152,6 @@ var mainState = {
         }
         //add a click handler
     },
-
-
 
   addBaddy: function () {
     // Get the first dead pipe of our group
