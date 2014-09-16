@@ -47,8 +47,12 @@ var mainState = {
       shadowBlur: 24
     };
     thud = game.add.audio('thud');
-    music = game.add.audio('song1');
-    music.play();
+    if( !music ) {
+      music = game.add.audio('song1');
+      music.play();
+    } else {
+      music.restart();
+    }
 
     gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
     gameoverImg.alpha = 0;
@@ -99,13 +103,14 @@ var mainState = {
   },
 
   hit: function () {
+    music.pause();
+    music.stop();
     this.spawner.delay = this.initialSpawnRate;
     gameState = false;
     game.input.reset();
 
     gameText = "";
     game.add.tween(gameoverImg).to({alpha: 1}, 2000, Phaser.Easing.Linear.None, true);
-        
   },
 
   tick: function () {
@@ -118,7 +123,6 @@ var mainState = {
 
   resetGame: function () {
     gameText = "Give up..";
-    music.stop();
     game.state.start('main');
   },
 
@@ -141,17 +145,16 @@ var mainState = {
     thud.play();
   },
 
-    gameOver: function () {
-             //add text
-        game.stage.backgroundColor = black;
-        //gameText = "GAMEOVER!";
-        this.baddies.visible = false;
-        if(game.input.mousePointer.isDown){
-          gameState = true;
-          this.resetGame();
-        }
-        //add a click handler
-    },
+  gameOver: function () {
+      game.stage.backgroundColor = black;
+      //gameText = "GAMEOVER!";
+      this.baddies.visible = false;
+      if(game.input.mousePointer.isDown){
+        gameState = true;
+        this.resetGame();
+      }
+      //add a click handler
+  },
 
   addBaddy: function () {
     // Get the first dead pipe of our group
