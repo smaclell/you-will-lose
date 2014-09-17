@@ -70,6 +70,10 @@ var mainState = {
     this.labelScore = game.add.text(game.world.centerX, game.world.centerY, initialScoreText,  scoreStyle);
     this.labelScore.anchor.set(0.5);
 
+    //show gameover message
+    this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
+    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
+
     this.person = game.add.sprite(700, 210, 'pointer');
     game.debug.geom(this.person, '#CFFFFF');
 
@@ -83,6 +87,7 @@ var mainState = {
     this.baddies.enableBody = true;
     this.baddies.createMultiple(36, 'stageOneBlock');
 
+    this.resetCounter = 0;
     this.score = 0;
     this.initialSpawnRate = 1600;
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
@@ -109,16 +114,15 @@ var mainState = {
   },
 
   hit: function () {
+    this.gameOverTween.start();
+    this.backgroundTween.start();
     music.pause();
     music.stop();
     this.spawner.delay = this.initialSpawnRate;
     gameState = false;
-    game.input.reset();
+    //game.input.reset();
 
     gameText = "";
-    //show gameover message
-    game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true);
-    game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
   },
 
   tick: function () {
@@ -130,12 +134,16 @@ var mainState = {
   },
 
   resetGame: function () {
+    this.gameOverTween.stop();
+    this.backgroundTween.stop();
+
     gameText = "Give up..";
     game.state.start('main');
   },
 
   inputUp: function () {
     tileBackground.alpha = 0;
+    this.backgroundTween.start();
     this.person.visible = false;
     this.baddies.visible = false;
   },
@@ -154,14 +162,16 @@ var mainState = {
   },
 
   gameOver: function () {
-      //game.stage.backgroundColor = black;
-      //gameText = "GAMEOVER!";
-      this.baddies.visible = false;
-      if(game.input.mousePointer.isDown){
-        gameState = true;
-        this.resetGame();
-      }
-      //add a click handler
+    this.baddies.visible = false;
+    var isDown = game.input.mousePointer.isDown;
+    if( isDown && this.resetCounter > 10 ){
+      gameState = true;
+      this.resetGame();
+    }
+
+    if( !isDown ) {
+      this.resetCounter++;
+    }
   },
 
   addBaddy: function () {
