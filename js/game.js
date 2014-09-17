@@ -15,19 +15,22 @@ var white = "#FCFCFC";
 var gameState = true;
 var gameText = 'You will lose';
 var music;
-var gameoverImg;
 var thud;
+
+var gameoverImg;
+var tileBackground;
+var bgt,got;
 // Create our 'main' state that will contain the game
 var mainState = {
 
   preload: function () {
-    game.stage.backgroundColor = '#A9A9A9';
+    game.stage.backgroundColor = white;
     game.load.audio('song1', ['assets/music/AttackOnShadow.mp3']);
     game.load.audio('thud', ['assets/sounds/thud.wav']);
     game.load.image('pointer', 'assets/sprites/pointer.png');
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
     game.load.image('gameover', 'assets/sprites/gameover.png');
-    game.load.image('giveup', 'assets/sprites/giveUp.png');
+    game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
   },
 
   create: function () {
@@ -53,6 +56,9 @@ var mainState = {
     } else {
       music.restart();
     }
+
+    tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
+    tileBackground.alpha = 0;
 
     gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
     gameoverImg.alpha = 0;
@@ -89,9 +95,9 @@ var mainState = {
     this.person.y = game.input.y - this.person.height / 2;
     if(gameState == true){
       if (game.input.mousePointer.isDown) {
-          this.runningGame();
+          this.inputDown();
       } else {
-          this.stoppingGame();
+          this.inputUp();
       }
     }else{
       this.gameOver();
@@ -110,7 +116,9 @@ var mainState = {
     game.input.reset();
 
     gameText = "";
-    game.add.tween(gameoverImg).to({alpha: 1}, 2000, Phaser.Easing.Linear.None, true);
+    //show gameover message
+    game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, true);
+    game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, true);
   },
 
   tick: function () {
@@ -126,16 +134,16 @@ var mainState = {
     game.state.start('main');
   },
 
-  stoppingGame: function () {
-    game.stage.backgroundColor = white;
+  inputUp: function () {
+    tileBackground.alpha = 0;
     this.person.visible = false;
     this.baddies.visible = false;
   },
 
-  runningGame: function () {
+  inputDown: function () {
     this.person.visible = true;
     this.baddies.visible = true;
-    game.stage.backgroundColor = black;
+    tileBackground.alpha = 1;
     gameText = "";
     this.score += 1;
     this.labelScore.text = this.score;
@@ -146,7 +154,7 @@ var mainState = {
   },
 
   gameOver: function () {
-      game.stage.backgroundColor = black;
+      //game.stage.backgroundColor = black;
       //gameText = "GAMEOVER!";
       this.baddies.visible = false;
       if(game.input.mousePointer.isDown){
