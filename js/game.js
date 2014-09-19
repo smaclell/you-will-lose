@@ -105,23 +105,24 @@ var mainState = {
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
 
+    var overall = this;
     game.input.onDown.add(function () {
-      this.thudSound();
-      if (this.state.onDown) {
-        this.state.onDown();
+      overall.thudSound();
+      if (overall.state.onDown) {
+        overall.state.onDown();
       }
     });
 
     game.input.onUp.add(function () {
-      if (this.state.onUp) {
-        this.state.onUp();
+      if (overall.state.onUp) {
+        overall.state.onUp();
       }
     });
 
     $.each(this.states, function (s, state) {
       console.log("Binding " + s);
       $.each(state, function (m, method) {
-        state[m] = method.bind(this);
+        state[m] = method.bind(overall);
       });
     });
 
