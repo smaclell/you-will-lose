@@ -39,20 +39,7 @@ var thud;
 
 var gameoverImg;
 var tileBackground;
-var bgt,got;
-// Create our 'main' state that will contain the game
-
-var noop = function () {};
-
-var state = {
-  update: function () { },
-  onDown: noop,
-  onUp: noop
-};
-
-var states = {
-
-};
+var bgt, got;
 
 var mainState = {
 
@@ -91,7 +78,7 @@ var mainState = {
       shadowBlur: 24
     };
 
-    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
+    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300), '', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
     this.labelScore = game.add.text(game.world.centerX, game.world.centerY, '',  scoreStyle);
@@ -118,6 +105,26 @@ var mainState = {
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
 
+    game.input.onDown.add(function () {
+      this.thudSound();
+      if (this.state.onDown) {
+        this.state.onDown();
+      }
+    });
+
+    game.input.onUp.add(function () {
+      if (this.state.onUp) {
+        this.state.onUp();
+      }
+    });
+
+    $.each(this.states, function (s, state) {
+      console.log("Binding " + s);
+      $.each(state, function (m, method) {
+        state[m] = method.bind(this);
+      });
+    });
+
     this.begin();
   },
 
@@ -131,23 +138,67 @@ var mainState = {
     this.resetCounter = 0;
     this.score = 0;
     this.initialSpawnRate = 1600;
+
+    this.state = this.states.begin;
+  },
+
+  states: {
+    begin: {
+      onDown: function () {
+        this.state = this.states.playing;
+      }
+    },
+
+    playing: {
+      onUpdate: function () {
+        this.person.visible = true;
+        this.baddies.visible = true;
+        tileBackground.alpha = 1;
+        gameText = "";
+        this.score += 1;
+        this.labelScore.text = this.score;
+      },
+      onUp: function () {
+        tileBackground.alpha = 0;
+        this.backgroundTween.start();
+        this.person.visible = false;
+        this.baddies.visible = false;
+
+        this.state = this.states.paused;
+      }
+    },
+
+    paused: {
+      onDown: function () {
+        this.state = this.states.playing;
+      }
+    },
+
+    gameOver: {
+      onUpdate: function () {
+        this.baddies.visible = false;
+      },
+
+      onDown: function () {
+        this.gameOverTween.stop();
+        this.backgroundTween.stop();
+
+        gameText = "Give up..";
+        this.state = this.states.begin;
+        this.begin();
+      }
+    }
   },
 
   update: function () {
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
-    if(gameState == true){
-      if (game.input.mousePointer.isDown) {
-          this.inputDown();
-      } else {
-          this.inputUp();
-      }
-    }else{
-      this.gameOver();
+
+    if (this.state.onUpdate) {
+      this.state.onUpdate();
     }
 
     this.gameMessageText.text = gameText;
-    game.input.onDown.add(this.thudSound, this);
     game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
   },
 
@@ -158,7 +209,8 @@ var mainState = {
     music.stop();
     this.spawner.delay = this.initialSpawnRate;
     gameState = false;
-    //game.input.reset();
+
+    this.state = this.states.gameOver;
 
     gameText = "";
   },
@@ -171,45 +223,8 @@ var mainState = {
     }
   },
 
-  resetGame: function () {
-    this.gameOverTween.stop();
-    this.backgroundTween.stop();
-
-    gameText = "Give up..";
-    this.begin();
-  },
-
-  inputUp: function () {
-    tileBackground.alpha = 0;
-    this.backgroundTween.start();
-    this.person.visible = false;
-    this.baddies.visible = false;
-  },
-
-  inputDown: function () {
-    this.person.visible = true;
-    this.baddies.visible = true;
-    tileBackground.alpha = 1;
-    gameText = "";
-    this.score += 1;
-    this.labelScore.text = this.score;
-  },
-
-  thudSound: function(){
+  thudSound: function () {
     thud.play();
-  },
-
-  gameOver: function () {
-    this.baddies.visible = false;
-    var isDown = game.input.mousePointer.isDown;
-    if( isDown && this.resetCounter > 10 ){
-      gameState = true;
-      this.resetGame();
-    }
-
-    if( !isDown ) {
-      this.resetCounter++;
-    }
   },
 
   addBaddy: function () {
