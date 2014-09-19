@@ -32,7 +32,6 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
-var gameState = true;
 var gameText = 'You will lose';
 var music;
 var thud;
@@ -191,7 +190,6 @@ var mainState = {
         music.pause();
         music.stop();
         this.spawner.delay = this.initialSpawnRate;
-        gameState = false;
         gameText = "";
       },
 
