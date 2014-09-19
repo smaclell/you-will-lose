@@ -8,6 +8,26 @@
 
 // Rediculous scoring system, goes up so fast it feels like you are really winning
 
+// Setup (Finish with You will lose)
+// -> Click once
+
+// Begin (Start the blocks)
+// -> Mouse down go to playing
+
+// Playing  (game going)
+// -> Get hit go to game over
+// -> Mouse Up to Pulse
+
+// Pulse (pause, fade out and stop)
+// -> Time out goes to over
+// -> Mouse Down go back to Playing
+
+// Game Over
+// -> Fade out complete
+
+// Give Up
+// -> Mouse down go to Begin
+
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
@@ -21,6 +41,19 @@ var gameoverImg;
 var tileBackground;
 var bgt,got;
 // Create our 'main' state that will contain the game
+
+var noop = function () {};
+
+var state = {
+  update: function () { },
+  onDown: noop,
+  onUp: noop
+};
+
+var states = {
+
+};
+
 var mainState = {
 
   preload: function () {
@@ -35,6 +68,14 @@ var mainState = {
 
   create: function () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    thud = game.add.audio('thud');
+
+    music = game.add.audio('song1');
+    music.play();
+
+    tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
+    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
+
     var scoreStyle = {
       font: "300px Arial",
       fill: "#808080",
@@ -42,37 +83,19 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
-      var labelStyle = {
+    var labelStyle = {
       font: "120px Arial",
       fill: "#808080",
       align: "center",
       shadowColor: "#666666",
       shadowBlur: 24
     };
-    thud = game.add.audio('thud');
-    if( !music ) {
-      music = game.add.audio('song1');
-      music.play();
-    } else {
-      music.restart();
-    }
-
-    tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
-    tileBackground.alpha = 0;
-
-    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
-    gameoverImg.alpha = 0;
 
     this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300) , '', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
-    var initialScoreText = this.score !== undefined ? this.score : '';
-    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, initialScoreText,  scoreStyle);
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, '',  scoreStyle);
     this.labelScore.anchor.set(0.5);
-
-    //show gameover message
-    this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
-    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
 
     this.person = game.add.sprite(700, 210, 'pointer');
     game.debug.geom(this.person, '#CFFFFF');
@@ -87,13 +110,28 @@ var mainState = {
     this.baddies.enableBody = true;
     this.baddies.createMultiple(36, 'stageOneBlock');
 
-    this.resetCounter = 0;
-    this.score = 0;
+    //show gameover message
+    this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
+    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
+
     this.initialSpawnRate = 1600;
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
+
+    this.begin();
   },
 
+  begin: function () {
+    music.restart();
+    tileBackground.alpha = 0;
+    gameoverImg.alpha = 0;
+
+    this.labelScore.text = this.score !== undefined ? this.score : '';
+
+    this.resetCounter = 0;
+    this.score = 0;
+    this.initialSpawnRate = 1600;
+  },
 
   update: function () {
     this.person.x = game.input.x - this.person.width / 2;
@@ -138,7 +176,7 @@ var mainState = {
     this.backgroundTween.stop();
 
     gameText = "Give up..";
-    game.state.start('main');
+    this.begin();
   },
 
   inputUp: function () {
