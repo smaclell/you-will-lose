@@ -126,67 +126,90 @@ var mainState = {
       });
     });
 
-    this.begin();
+    this.changeState(this.states.begin);
   },
 
-  begin: function () {
-    music.restart();
-    tileBackground.alpha = 0;
-    gameoverImg.alpha = 0;
-
-    this.labelScore.text = this.score !== undefined ? this.score : '';
-
-    this.resetCounter = 0;
-    this.score = 0;
-    this.initialSpawnRate = 1600;
-
-    this.state = this.states.begin;
+  changeState: function (nextState) {
+    this.state = nextState;
+    if (nextState.onStart) {
+      nextState.onStart();
+    }
   },
 
   states: {
     begin: {
+      onStart: function () {
+        music.restart();
+        tileBackground.alpha = 0;
+        gameoverImg.alpha = 0;
+
+        this.labelScore.text = this.score !== undefined ? this.score : '';
+
+        this.resetCounter = 0;
+        this.score = 0;
+        this.initialSpawnRate = 1600;
+      },
+
       onDown: function () {
-        this.state = this.states.playing;
+        this.changeState(this.states.playing);
       }
     },
 
     playing: {
-      onUpdate: function () {
+      onStart: function () {
         this.person.visible = true;
         this.baddies.visible = true;
         tileBackground.alpha = 1;
         gameText = "";
+      },
+      onUpdate: function () {
         this.score += 1;
         this.labelScore.text = this.score;
       },
       onUp: function () {
-        tileBackground.alpha = 0;
-        this.backgroundTween.start();
-        this.person.visible = false;
-        this.baddies.visible = false;
-
-        this.state = this.states.paused;
+        this.changeState(this.states.paused);
       }
     },
 
     paused: {
+      onStart: function () {
+        tileBackground.alpha = 0;
+        this.backgroundTween.start();
+        this.person.visible = false;
+        this.baddies.visible = false;
+      },
       onDown: function () {
-        this.state = this.states.playing;
+        this.changeState(this.states.playing);
       }
     },
 
     gameOver: {
-      onUpdate: function () {
+      onStart: function () {
         this.baddies.visible = false;
+        this.gameOverTween.start();
+        this.backgroundTween.start();
+        music.pause();
+        music.stop();
+        this.spawner.delay = this.initialSpawnRate;
+        gameState = false;
+        gameText = "";
       },
 
       onDown: function () {
+        this.changeState(this.states.giveUp);
+      }
+    },
+
+    giveUp: {
+      onStart: function () {
         this.gameOverTween.stop();
         this.backgroundTween.stop();
 
         gameText = "Give up..";
-        this.state = this.states.begin;
-        this.begin();
+      },
+
+      onDown: function () {
+        this.changeState(this.states.begin);
       }
     }
   },
@@ -204,16 +227,7 @@ var mainState = {
   },
 
   hit: function () {
-    this.gameOverTween.start();
-    this.backgroundTween.start();
-    music.pause();
-    music.stop();
-    this.spawner.delay = this.initialSpawnRate;
-    gameState = false;
-
-    this.state = this.states.gameOver;
-
-    gameText = "";
+    this.changeState(this.states.gameOver);
   },
 
   tick: function () {
