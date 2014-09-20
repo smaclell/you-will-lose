@@ -92,10 +92,6 @@ var mainState = {
     this.person.body.collideWorldBounds = true;
     this.person.body.bounce.setTo(1, 1);
 
-    this.baddies = game.add.group();
-    this.baddies.enableBody = true;
-    this.baddies.createMultiple(36, 'stageOneBlock');
-
     //show gameover message
     this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
@@ -147,6 +143,10 @@ var mainState = {
 
         this.score = 0;
         this.initialSpawnRate = 1600;
+
+        this.baddies = game.add.group();
+        this.baddies.enableBody = true;
+        this.baddies.createMultiple(36, 'stageOneBlock');
       },
 
       onDown: function () {
