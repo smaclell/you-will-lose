@@ -32,7 +32,6 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
-var gameText = 'You will lose';
 var music;
 var thud;
 
@@ -80,7 +79,7 @@ var mainState = {
       shadowBlur: 24
     };
 
-    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300), '', labelStyle);
+    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300), 'You will lose', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
     this.labelScore = game.add.text(game.world.centerX, game.world.centerY, '',  scoreStyle);
@@ -160,6 +159,8 @@ var mainState = {
         this.baddies.enableBody = true;
         this.baddies.createMultiple(36, 'stageOneBlock');
 
+        this.gameMessageText.text = "";
+
         this.changeState(this.states.playing);
       }
     },
@@ -169,7 +170,6 @@ var mainState = {
         this.person.visible = true;
         this.baddies.visible = true;
         tileBackground.alpha = 1;
-        gameText = "";
       },
       onUpdate: function () {
         this.score += 1;
@@ -205,7 +205,6 @@ var mainState = {
         music.pause();
         music.stop();
         this.spawner.delay = this.initialSpawnRate;
-        gameText = "";
 
         this.changeState(this.states.giveUp);
       },
@@ -217,7 +216,7 @@ var mainState = {
 
     giveUp: {
       onStart: function () {
-        gameText = "Give up..";
+        this.gameMessageText.text = "Give up..";
       },
 
       onDown: function () {
@@ -233,8 +232,6 @@ var mainState = {
     if (this.state.onUpdate) {
       this.state.onUpdate();
     }
-
-    this.gameMessageText.text = gameText;
   },
 
   tick: function () {
