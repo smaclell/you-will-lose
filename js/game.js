@@ -121,6 +121,7 @@ var mainState = {
     $.each(this.states, function (s, state) {
       console.log("Binding " + s);
       $.each(state, function (m, method) {
+        state.name = s;
         state[m] = method.bind(overall);
       });
     });
@@ -129,10 +130,12 @@ var mainState = {
   },
 
   changeState: function (nextState) {
+    console.log(this.state.name + " to " + nextState.name);
     this.state = nextState;
     if (nextState.onStart) {
       nextState.onStart();
     }
+    console.log("Switched to " + nextState.name);
   },
 
   states: {
