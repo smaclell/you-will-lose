@@ -60,7 +60,10 @@ var mainState = {
     music.play();
 
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
+    tileBackground.alpha = 0;
+
     gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY + 125, 'gameover');
+    gameoverImg.alpha = 0;
 
     var scoreStyle = {
       font: "300px Arial",
@@ -122,7 +125,7 @@ var mainState = {
       });
     });
 
-    this.changeState(this.states.begin);
+    this.changeState(this.states.title);
   },
 
   changeState: function (nextState) {
@@ -135,9 +138,18 @@ var mainState = {
   },
 
   states: {
+    title: {
+      onDown: function () {
+        this.changeState(this.states.begin);
+      }
+    },
+
     begin: {
       onStart: function () {
+        this.gameOverTween.stop();
+        this.backgroundTween.stop();
         music.restart();
+
         tileBackground.alpha = 0;
         gameoverImg.alpha = 0;
 
@@ -147,9 +159,7 @@ var mainState = {
         this.baddies = game.add.group();
         this.baddies.enableBody = true;
         this.baddies.createMultiple(36, 'stageOneBlock');
-      },
 
-      onDown: function () {
         this.changeState(this.states.playing);
       }
     },
@@ -196,18 +206,17 @@ var mainState = {
         music.stop();
         this.spawner.delay = this.initialSpawnRate;
         gameText = "";
+
+        this.changeState(this.states.giveUp);
       },
 
       onDown: function () {
-        this.changeState(this.states.giveUp);
+        this.changeState(this.states.begin);
       }
     },
 
     giveUp: {
       onStart: function () {
-        this.gameOverTween.stop();
-        this.backgroundTween.stop();
-
         gameText = "Give up..";
       },
 
