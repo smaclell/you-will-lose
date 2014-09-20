@@ -164,6 +164,11 @@ var mainState = {
       onUpdate: function () {
         this.score += 1;
         this.labelScore.text = this.score;
+
+        var hit = game.physics.arcade.overlap(this.person, this.baddies);
+        if (hit) {
+          this.changeState(this.states.gameOver);
+        }
       },
       onUp: function () {
         this.changeState(this.states.paused);
@@ -221,11 +226,6 @@ var mainState = {
     }
 
     this.gameMessageText.text = gameText;
-    game.physics.arcade.overlap(this.person, this.baddies, this.hit, null, this);
-  },
-
-  hit: function () {
-    this.changeState(this.states.gameOver);
   },
 
   tick: function () {
