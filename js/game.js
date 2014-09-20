@@ -145,9 +145,6 @@ var mainState = {
         tileBackground.alpha = 0;
         gameoverImg.alpha = 0;
 
-        this.labelScore.text = this.score !== undefined ? this.score : '';
-
-        this.resetCounter = 0;
         this.score = 0;
         this.initialSpawnRate = 1600;
       },
