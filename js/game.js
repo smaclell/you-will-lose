@@ -60,7 +60,7 @@ var mainState = {
     music.play();
 
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
-    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY - 300, 'gameover');
+    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY + 125, 'gameover');
 
     var scoreStyle = {
       font: "300px Arial",
