@@ -74,6 +74,13 @@ var mainState = {
     this.person.body.collideWorldBounds = true;
     this.person.body.bounce.setTo(1, 1);
 
+    this.sides = [
+      [0, game.world.width, 0, 0, 0, 1],
+      [0, game.world.width, game.world.height, game.world.height, 0, -1],
+      [0, 0, 0, game.world.height, 1, 0],
+      [game.world.width, game.world.width, 0, game.world.height, -1, 0]
+    ];
+
     //show gameover message
     this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
@@ -242,15 +249,7 @@ var mainState = {
       this.labelScore.text = this.score;
     }
 
-    // Set the new position of the baddy
-    var sides = [
-      [0, game.world.width, 0, 0, 0, 1],
-      [0, game.world.width, game.world.height, game.world.height, 0, -1],
-      [0, 0, 0, game.world.height, 1, 0],
-      [game.world.width, game.world.width, 0, game.world.height, -1, 0]
-    ];
-
-    var side = sides[Math.floor(Math.random() * 4)];
+    var side = this.sides[Math.floor(Math.random() * 4)];
 
     var x = game.rnd.integerInRange(side[0], side[1]);
     var y = game.rnd.integerInRange(side[2], side[3]);
