@@ -8,26 +8,6 @@
 
 // Rediculous scoring system, goes up so fast it feels like you are really winning
 
-// Setup (Finish with You will lose)
-// -> Click once
-
-// Begin (Start the blocks)
-// -> Mouse down go to playing
-
-// Playing  (game going)
-// -> Get hit go to game over
-// -> Mouse Up to Pulse
-
-// Pulse (pause, fade out and stop)
-// -> Time out goes to over
-// -> Mouse Down go back to Playing
-
-// Game Over
-// -> Fade out complete
-
-// Give Up
-// -> Mouse down go to Begin
-
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
