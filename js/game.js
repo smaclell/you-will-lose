@@ -136,6 +136,7 @@ var mainState = {
         music.restart();
 
         this.score = 0;
+        this.labelScore.text = '';
         this.initialSpawnRate = 1600;
 
         this.baddies = game.add.group();
@@ -158,9 +159,6 @@ var mainState = {
         tileBackground.alpha = 1;
       },
       onUpdate: function () {
-        this.score += 1;
-        this.labelScore.text = this.score;
-
         var hit = game.physics.arcade.overlap(this.person, this.baddies);
         if (hit) {
           this.changeState(this.states.gameOver);
@@ -239,6 +237,11 @@ var mainState = {
       return;
     }
 
+    if (this.baddies.visible) {
+      this.score += 1;
+      this.labelScore.text = this.score;
+    }
+
     // Set the new position of the baddy
     var sides = [
       [0, game.world.width, 0, 0, 0, 1],
@@ -255,7 +258,7 @@ var mainState = {
 
     // Add velocity to the baddy to make it move left
     var spread = 36;
-    var scale = Math.floor(Math.pow(this.score / 40.0, 1.25));
+    var scale = Math.floor(Math.pow(this.score, 1.10));
     var actual = 200 + scale;
     var offset = Math.floor(Math.random() * spread - spread / 2);
     baddy.body.velocity.x = actual * side[4] + offset * side[5];
