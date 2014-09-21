@@ -146,11 +146,14 @@ var mainState = {
     begin: {
       onStart: function () {
         this.gameOverTween.stop();
-        this.backgroundTween.stop();
-        music.restart();
-
-        tileBackground.alpha = 0;
+        this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
         gameoverImg.alpha = 0;
+
+        this.backgroundTween.stop();
+        this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
+        tileBackground.alpha = 0;
+
+        music.restart();
 
         this.score = 0;
         this.initialSpawnRate = 1600;
@@ -169,6 +172,9 @@ var mainState = {
       onStart: function () {
         this.person.visible = true;
         this.baddies.visible = true;
+
+        this.backgroundTween.stop();
+        this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
         tileBackground.alpha = 1;
       },
       onUpdate: function () {
