@@ -14,10 +14,22 @@ var black = "#000000";
 var white = "#FCFCFC";
 var music;
 var thud;
-
 var gameoverImg;
 var tileBackground;
 var bgt, got;
+
+//heckle array
+var heckle = [
+"Give up...",
+"Please stop...",
+"This is humiliating",
+"I hurt for you",
+"Try something new",
+"Why bother",
+"-_-",
+"Sadness",
+"Boooo..."
+];
 
 var mainState = {
 
@@ -140,7 +152,6 @@ var mainState = {
         this.score = 0;
         this.initialSpawnRate = 1600;
 
-        
         this.baddies.enableBody = true;
         this.baddies.createMultiple(36, 'stageOneBlock');
 
@@ -204,7 +215,9 @@ var mainState = {
 
     giveUp: {
       onStart: function () {
-        this.gameMessageText.text = "Give up..";
+        //select and display heckle
+        var select = heckle[Math.floor(Math.random()*heckle.length)];
+        this.gameMessageText.text = select;
       },
 
       onDown: function () {
