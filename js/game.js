@@ -14,10 +14,21 @@ var black = "#000000";
 var white = "#FCFCFC";
 var music;
 var thud;
-
 var gameoverImg;
 var tileBackground;
-var bgt, got;
+
+//heckle array
+var heckle = [
+"Give up...",
+"Please stop...",
+"This is humiliating",
+"I hurt for you",
+"Try something new",
+"Why bother",
+"-_-",
+"Sadness",
+"Boooo..."
+];
 
 var mainState = {
 
@@ -29,6 +40,9 @@ var mainState = {
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
     game.load.image('gameover', 'assets/sprites/gameover.png');
     game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
+
+    //fps
+    game.time.advancedTiming = true;
   },
 
   create: function () {
@@ -36,7 +50,7 @@ var mainState = {
     thud = game.add.audio('thud');
 
     music = game.add.audio('song1');
-    music.play();
+    
 
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
     tileBackground.alpha = 0;
@@ -81,9 +95,14 @@ var mainState = {
       [game.world.width, game.world.width, 0, game.world.height, -1, 0]
     ];
 
-    //show gameover message
+    this.baddies = game.add.group();
+
+    //show gameover message tween
     this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
-    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
+    //fade to game tween
+    this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
+    //fade to gameover tween
+    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 500, Phaser.Easing.Linear.None, false);
 
     this.initialSpawnRate = 1600;
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
@@ -133,12 +152,9 @@ var mainState = {
     begin: {
       onStart: function () {
         this.gameOverTween.stop();
-        this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
         gameoverImg.alpha = 0;
 
-        this.backgroundTween.stop();
-        this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
-        tileBackground.alpha = 0;
+        this.startgameTween.start();
 
         music.restart();
 
@@ -146,7 +162,6 @@ var mainState = {
         this.labelScore.text = '';
         this.initialSpawnRate = 1600;
 
-        this.baddies = game.add.group();
         this.baddies.enableBody = true;
         this.baddies.createMultiple(36, 'stageOneBlock');
 
@@ -162,8 +177,7 @@ var mainState = {
         this.baddies.visible = true;
 
         this.backgroundTween.stop();
-        this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
-        tileBackground.alpha = 1;
+        this.startgameTween.stop();
       },
       onUpdate: function () {
         var hit = game.physics.arcade.overlap(this.person, this.baddies);
@@ -196,7 +210,6 @@ var mainState = {
         music.pause();
         music.stop();
         this.spawner.delay = this.initialSpawnRate;
-
         this.changeState(this.states.giveUp);
       },
 
@@ -207,7 +220,9 @@ var mainState = {
 
     giveUp: {
       onStart: function () {
-        this.gameMessageText.text = "Give up..";
+        //select and display heckle
+        var select = heckle[Math.floor(Math.random()*heckle.length)];
+        this.gameMessageText.text = select;
       },
 
       onDown: function () {
@@ -223,6 +238,8 @@ var mainState = {
     if (this.state.onUpdate) {
       this.state.onUpdate();
     }
+    //update fps
+    game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
   },
 
   tick: function () {
