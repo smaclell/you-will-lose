@@ -40,6 +40,9 @@ var mainState = {
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
     game.load.image('gameover', 'assets/sprites/gameover.png');
     game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
+
+    //fps
+    game.time.advancedTiming = true;
   },
 
   create: function () {
@@ -232,6 +235,8 @@ var mainState = {
     if (this.state.onUpdate) {
       this.state.onUpdate();
     }
+    //update fps
+    game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
   },
 
   tick: function () {
