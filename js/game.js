@@ -197,6 +197,7 @@ var mainState = {
         this.baddies.visible = false;
       },
       onDown: function () {
+        this.startgameTween.start();
         this.changeState(this.states.playing);
       }
     },
