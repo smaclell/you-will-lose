@@ -169,8 +169,7 @@ var mainState = {
         this.baddies.visible = true;
 
         this.backgroundTween.stop();
-        this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 250, Phaser.Easing.Linear.None, false);
-        tileBackground.alpha = 1;
+        this.startgameTween.stop();
       },
       onUpdate: function () {
         this.score += 1;
@@ -206,7 +205,6 @@ var mainState = {
         music.pause();
         music.stop();
         this.spawner.delay = this.initialSpawnRate;
-
         this.changeState(this.states.giveUp);
       },
 
