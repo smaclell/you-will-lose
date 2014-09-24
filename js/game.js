@@ -19,15 +19,15 @@ var tileBackground;
 
 //heckle array
 var heckle = [
-"Give up...",
-"Please stop...",
-"This is humiliating",
-"I hurt for you",
-"Try something new",
-"Why bother",
-"-_-",
-"Sadness",
-"Boooo..."
+  "Give up...",
+  "Please stop...",
+  "This is humiliating",
+  "I hurt for you",
+  "Try something new",
+  "Why bother",
+  "-_-",
+  "Sadness",
+  "Boooo..."
 ];
 
 var mainState = {
@@ -50,7 +50,6 @@ var mainState = {
     thud = game.add.audio('thud');
 
     music = game.add.audio('song1');
-    
 
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
     tileBackground.alpha = 0;
@@ -221,7 +220,8 @@ var mainState = {
     giveUp: {
       onStart: function () {
         //select and display heckle
-        var select = heckle[Math.floor(Math.random()*heckle.length)];
+        var index = Math.floor(Math.random() * heckle.length);
+        var select = heckle[index];
         this.gameMessageText.text = select;
       },
 
@@ -239,7 +239,7 @@ var mainState = {
       this.state.onUpdate();
     }
     //update fps
-    game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
+    game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
   },
 
   tick: function () {
