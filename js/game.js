@@ -12,9 +12,8 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
-var music;
-var thud;
 var gameoverImg;
+var muteMusic;
 var tileBackground;
 
 //heckle array
@@ -50,7 +49,9 @@ var mainState = {
     thud = game.add.audio('thud');
 
     music = game.add.audio('song1');
-
+    
+    muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    muteKey.onDown.add(this.muteMusic,this);
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
     tileBackground.alpha = 0;
 
@@ -152,7 +153,6 @@ var mainState = {
       onStart: function () {
         this.gameOverTween.stop();
         gameoverImg.alpha = 0;
-
         this.startgameTween.start();
 
         music.restart();
@@ -165,7 +165,7 @@ var mainState = {
         this.baddies.createMultiple(36, 'stageOneBlock');
 
         this.gameMessageText.text = "";
-
+        music.volume = 0.3;
         this.changeState(this.states.playing);
       }
     },
@@ -235,11 +235,11 @@ var mainState = {
   update: function () {
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
-
     if (this.state.onUpdate) {
       this.state.onUpdate();
     }
     //update fps
+    //muteKey.onDown.add(muteMusic, this);
     game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
   },
 
@@ -253,6 +253,15 @@ var mainState = {
 
   thudSound: function () {
     thud.play();
+  },
+
+  muteMusic: function(key){
+    console.log(music.volume);
+    if(music.volume > 0){
+      music.volume = 0;
+    }else{
+      music.volume = 0.3;
+    }
   },
 
   addBaddy: function () {
