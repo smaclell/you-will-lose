@@ -37,7 +37,6 @@ var mainState = {
     game.load.audio('thud', ['assets/sounds/thud.wav']);
     game.load.image('pointer', 'assets/sprites/pointer.png');
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
-    game.load.image('gameover', 'assets/sprites/gameover.png');
     game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
 
     //fps
@@ -54,9 +53,6 @@ var mainState = {
     muteKey.onDown.add(this.muteMusic,this);
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
     tileBackground.alpha = 0;
-
-    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY + 125, 'gameover');
-    gameoverImg.alpha = 0;
 
     var scoreStyle = {
       font: "300px Arial",
@@ -97,8 +93,6 @@ var mainState = {
 
     this.baddies = game.add.group();
 
-    //show gameover message tween
-    this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to game tween
     this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to gameover tween
@@ -151,8 +145,6 @@ var mainState = {
 
     begin: {
       onStart: function () {
-        this.gameOverTween.stop();
-        gameoverImg.alpha = 0;
         this.startgameTween.start();
 
         music.restart();
@@ -205,7 +197,6 @@ var mainState = {
     gameOver: {
       onStart: function () {
         this.baddies.visible = false;
-        this.gameOverTween.start();
         this.backgroundTween.start();
         music.pause();
         music.stop();
@@ -239,7 +230,6 @@ var mainState = {
       this.state.onUpdate();
     }
     //update fps
-    //muteKey.onDown.add(muteMusic, this);
     game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
   },
 
