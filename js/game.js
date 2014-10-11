@@ -70,12 +70,22 @@ var mainState = {
       shadowColor: "#666666",
       shadowBlur: 24
     };
+    var creditsStyle = {
+      font: "36px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 6
+    };
 
     this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300), 'You will lose', labelStyle);
     this.gameMessageText.anchor.setTo(0.5, 0);
 
     this.labelScore = game.add.text(game.world.centerX, game.world.centerY, '',  scoreStyle);
     this.labelScore.anchor.set(0.5);
+
+    this.creditsText = game.add.text(game.world.centerX, game.world.height * 0.9, 'Paul Heinrichs + Scott MacLellan',  creditsStyle);
+    this.creditsText.anchor.set(0.5, 0);
 
     this.person = game.add.sprite(700, 210, 'pointer');
     game.debug.geom(this.person, '#CFFFFF');
@@ -148,6 +158,10 @@ var mainState = {
         this.startgameTween.start();
 
         music.restart();
+        if (this.creditsText !== null) {
+          this.creditsText.destroy();
+          this.creditsText = null;
+        }
 
         this.score = 0;
         this.labelScore.text = '';
