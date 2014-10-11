@@ -93,7 +93,6 @@ var mainState = {
       [game.world.width, game.world.width, 0, game.world.height, -1, 0]
     ];
 
-    this.baddies = game.add.group();
     //fade to game tween
     this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to gameover tween
@@ -154,6 +153,7 @@ var mainState = {
         this.labelScore.text = '';
         this.initialSpawnRate = 1600;
 
+        this.baddies = game.add.group();
         this.baddies.enableBody = true;
         this.baddies.createMultiple(36, 'stageOneBlock');
 
