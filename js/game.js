@@ -50,6 +50,7 @@ var mainState = {
 
     music = game.add.audio('song1');
     
+    var muteKey;
     muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     muteKey.onDown.add(this.muteMusic,this);
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
@@ -93,7 +94,6 @@ var mainState = {
     ];
 
     this.baddies = game.add.group();
-
     //fade to game tween
     this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to gameover tween
