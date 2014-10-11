@@ -12,6 +12,7 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
+var thud;
 var gameoverImg;
 var muteMusic;
 var tileBackground;
@@ -246,7 +247,6 @@ var mainState = {
   },
 
   muteMusic: function(key){
-    console.log(music.volume);
     if(music.volume > 0){
       music.volume = 0;
     }else{
