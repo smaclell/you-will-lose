@@ -12,9 +12,9 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
 var person;
 var black = "#000000";
 var white = "#FCFCFC";
-var music;
 var thud;
 var gameoverImg;
+var muteMusic;
 var tileBackground;
 
 //heckle array
@@ -38,7 +38,6 @@ var mainState = {
     game.load.audio('thud', ['assets/sounds/thud.wav']);
     game.load.image('pointer', 'assets/sprites/pointer.png');
     game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
-    game.load.image('gameover', 'assets/sprites/gameover.png');
     game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
 
     //fps
@@ -50,12 +49,12 @@ var mainState = {
     thud = game.add.audio('thud');
 
     music = game.add.audio('song1');
-
+    
+    var muteKey;
+    muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    muteKey.onDown.add(this.muteMusic,this);
     tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
     tileBackground.alpha = 0;
-
-    gameoverImg = game.add.sprite(game.world.centerX / 2.5, game.world.centerY + 125, 'gameover');
-    gameoverImg.alpha = 0;
 
     var scoreStyle = {
       font: "300px Arial",
@@ -95,9 +94,6 @@ var mainState = {
     ];
 
     this.baddies = game.add.group();
-
-    //show gameover message tween
-    this.gameOverTween = game.add.tween(gameoverImg).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to game tween
     this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
     //fade to gameover tween
@@ -150,9 +146,6 @@ var mainState = {
 
     begin: {
       onStart: function () {
-        this.gameOverTween.stop();
-        gameoverImg.alpha = 0;
-
         this.startgameTween.start();
 
         music.restart();
@@ -165,7 +158,7 @@ var mainState = {
         this.baddies.createMultiple(36, 'stageOneBlock');
 
         this.gameMessageText.text = "";
-
+        music.volume = 0.3;
         this.changeState(this.states.playing);
       }
     },
@@ -205,7 +198,6 @@ var mainState = {
     gameOver: {
       onStart: function () {
         this.baddies.visible = false;
-        this.gameOverTween.start();
         this.backgroundTween.start();
         music.pause();
         music.stop();
@@ -235,7 +227,6 @@ var mainState = {
   update: function () {
     this.person.x = game.input.x - this.person.width / 2;
     this.person.y = game.input.y - this.person.height / 2;
-
     if (this.state.onUpdate) {
       this.state.onUpdate();
     }
@@ -253,6 +244,14 @@ var mainState = {
 
   thudSound: function () {
     thud.play();
+  },
+
+  muteMusic: function(key){
+    if(music.volume > 0){
+      music.volume = 0;
+    }else{
+      music.volume = 0.3;
+    }
   },
 
   addBaddy: function () {
