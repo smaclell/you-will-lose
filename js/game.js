@@ -111,6 +111,7 @@ var mainState = {
     this.initialSpawnRate = 1600;
     this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
     this.timer = game.time.events.loop(1000, this.tick, this);
+    game.time.events.pause();
 
     var overall = this;
     game.input.onDown.add(function () {
@@ -149,6 +150,7 @@ var mainState = {
   states: {
     title: {
       onDown: function () {
+        game.time.events.resume();
         this.changeState(this.states.begin);
       }
     },
