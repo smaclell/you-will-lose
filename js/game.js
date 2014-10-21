@@ -49,6 +49,7 @@ $(function() {
       game.time.advancedTiming = true;
     },
 
+<<<<<<< HEAD
     create: function () {
       game.physics.startSystem(Phaser.Physics.ARCADE);
       thud = game.add.audio('thud');
@@ -124,6 +125,126 @@ $(function() {
           overall.state.onDown();
         }
       });
+=======
+var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'game');
+var person;
+var black = "#000000";
+var white = "#FCFCFC";
+var thud;
+var gameoverImg;
+var muteMusic;
+var tileBackground;
+
+//heckle array
+var heckle = [
+  "Give up...",
+  "Please stop...",
+  "This is humiliating",
+  "I hurt for you",
+  "Try something new",
+  "Why bother",
+  "-_-",
+  "Sadness",
+  "Boooo..."
+];
+
+var mainState = {
+
+  preload: function () {
+    game.stage.backgroundColor = white;
+    game.load.audio('song1', ['assets/music/AttackOnShadow.mp3']);
+    game.load.audio('thud', ['assets/sounds/thud.wav']);
+    game.load.image('pointer', 'assets/sprites/pointer.png');
+    game.load.image('stageOneBlock', 'assets/sprites/stageOneBlock.png');
+    game.load.image('backgroundBlack', 'assets/sprites/backgroundBlack.png');
+
+    //fps
+    game.time.advancedTiming = true;
+  },
+
+  create: function () {
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    thud = game.add.audio('thud');
+
+    music = game.add.audio('song1');
+    
+    var muteKey;
+    muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    muteKey.onDown.add(this.muteMusic,this);
+    tileBackground = game.add.tileSprite(0, 0, 1024, 768, 'backgroundBlack');
+    tileBackground.alpha = 0;
+
+    var scoreStyle = {
+      font: "300px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 24
+    };
+    var labelStyle = {
+      font: "120px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 24
+    };
+    var creditsStyle = {
+      font: "36px Arial",
+      fill: "#808080",
+      align: "center",
+      shadowColor: "#666666",
+      shadowBlur: 6
+    };
+
+    this.gameMessageText = this.add.text(this.game.world.centerX, (game.world.centerY - 300), 'You will lose', labelStyle);
+    this.gameMessageText.anchor.setTo(0.5, 0);
+
+    this.labelScore = game.add.text(game.world.centerX, game.world.centerY, '',  scoreStyle);
+    this.labelScore.anchor.set(0.5);
+
+    this.creditsText = game.add.text(game.world.centerX, game.world.height * 0.9, 'Paul Heinrichs + Scott MacLellan',  creditsStyle);
+    this.creditsText.anchor.set(0.5, 0);
+
+    this.person = game.add.sprite(700, 210, 'pointer');
+    game.debug.geom(this.person, '#CFFFFF');
+
+    game.physics.enable(this.person, Phaser.Physics.ARCADE);
+    this.person.inputEnabled = true;
+    this.person.input.enableDrag(true);
+    this.person.body.collideWorldBounds = true;
+    this.person.body.bounce.setTo(1, 1);
+
+    this.sides = [
+      [0, game.world.width, 0, 0, 0, 1],
+      [0, game.world.width, game.world.height, game.world.height, 0, -1],
+      [0, 0, 0, game.world.height, 1, 0],
+      [game.world.width, game.world.width, 0, game.world.height, -1, 0]
+    ];
+
+    //fade to game tween
+    this.startgameTween = game.add.tween(tileBackground).to({alpha: 1}, 500, Phaser.Easing.Linear.None, false);
+    //fade to gameover tween
+    this.backgroundTween = game.add.tween(tileBackground).to({alpha: 0}, 500, Phaser.Easing.Linear.None, false);
+
+    this.initialSpawnRate = 1600;
+    this.spawner = game.time.events.loop(this.initialSpawnRate, this.addBaddy, this);
+    this.timer = game.time.events.loop(1000, this.tick, this);
+    game.time.events.pause();
+
+    var overall = this;
+    game.input.onDown.add(function () {
+      overall.thudSound();
+      if (overall.state.onDown) {
+        overall.state.onDown();
+      }
+    });
+
+    game.input.onUp.add(function () {
+      if (overall.state.onUp) {
+        overall.state.onUp();
+      }
+    });
+>>>>>>> a081e54c9af4ba32ab8768ab5d7b80afe26d6a5f
 
       game.input.onUp.add(function () {
         if (overall.state.onUp) {
@@ -142,11 +263,19 @@ $(function() {
       this.changeState(this.states.title);
     },
 
+<<<<<<< HEAD
     changeState: function (nextState) {
       console.log(this.state.name + " to " + nextState.name);
       this.state = nextState;
       if (nextState.onStart) {
         nextState.onStart();
+=======
+  states: {
+    title: {
+      onDown: function () {
+        game.time.events.resume();
+        this.changeState(this.states.begin);
+>>>>>>> a081e54c9af4ba32ab8768ab5d7b80afe26d6a5f
       }
       console.log("Switched to " + nextState.name);
     },
